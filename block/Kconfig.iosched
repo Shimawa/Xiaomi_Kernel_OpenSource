@@ -59,7 +59,22 @@ config IOSCHED_MAPLE
 		improve in performance. Maple also uses hooks for the state notifier driver
 		to increase expirations when power is suspended to decrease workload.
 
->>>>>>> 3036dec5a16e... block: add maple iosched
+config IOSCHED_ANXIETY
+	tristate "Anxiety I/O scheduler"
+	default y
+	---help---
+	  The Anxiety I/O scheduler prioritizes latency over everything
+		else. When a request comes in, it will use a lighweight
+		selection algorithm to swiftly process the current pending task.
+
+config IOSCHED_FIOPS
+	tristate "IOPS based I/O scheduler"
+	default y
+	---help---
+	  This is an IOPS based I/O scheduler. It will try to distribute
+          IOPS equally among all processes in the system. It's mainly for
+          Flash based storage.
+
 choice
 	prompt "Default I/O scheduler"
 	default DEFAULT_CFQ
@@ -79,6 +94,12 @@ choice
 	config DEFAULT_MAPLE
 			bool "Maple" if IOSCHED_MAPLE=y
 
+	config DEFAULT_ANXIETY
+		bool "Anxiety" if IOSCHED_ANXIETY=y
+
+	config DEFAULT_FIOPS
+		bool "FIOPS" if IOSCHED_FIOPS=y
+
 endchoice
 
 config DEFAULT_IOSCHED
@@ -87,6 +108,8 @@ config DEFAULT_IOSCHED
 	default "cfq" if DEFAULT_CFQ
 	default "noop" if DEFAULT_NOOP
 	default "maple" if DEFAULT_MAPLE
+	default "fiops" if DEFAULT_FIOPS
+	default "anxiety" if DEFAULT_ANXIETY
 endmenu
 
 endif
