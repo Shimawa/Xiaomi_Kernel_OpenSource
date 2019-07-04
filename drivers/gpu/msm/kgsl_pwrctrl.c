@@ -9,8 +9,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * 2019 Mod for 'butterfly@daisy' by Victor Bo <eremitein@xda/zerovoid@4pda>
- *
  */
 
 #include <linux/export.h>
@@ -30,10 +28,6 @@
 #include "kgsl_device.h"
 #include "kgsl_trace.h"
 #include <soc/qcom/devfreq_devbw.h>
-
-#ifdef CONFIG_ADRENO_REAL_IDLER
-#include <linux/adreno_real_idler.h>
-#endif
 
 #define KGSL_PWRFLAGS_POWER_ON 0
 #define KGSL_PWRFLAGS_CLK_ON   1
@@ -799,21 +793,12 @@ static ssize_t kgsl_pwrctrl_gpuclk_show(struct device *dev,
 				    struct device_attribute *attr,
 				    char *buf)
 {
-	unsigned long freq;
 	struct kgsl_device *device = kgsl_device_from_dev(dev);
 	struct kgsl_pwrctrl *pwr;
 	if (device == NULL)
 		return 0;
 	pwr = &device->pwrctrl;
-
-#ifdef CONFIG_ADRENO_REAL_IDLER
-	if ((device->state == KGSL_STATE_SLUMBER) && (adreno_idler_active == true))
-		freq = pwr->pwrlevels[pwr->num_pwrlevels - 1].gpu_freq;
-	else
-#endif
-		freq = kgsl_pwrctrl_active_freq(pwr);
-
-	return snprintf(buf, PAGE_SIZE, "%lu\n", freq);
+	return snprintf(buf, PAGE_SIZE, "%ld\n", kgsl_pwrctrl_active_freq(pwr));
 }
 
 static ssize_t __timer_store(struct device *dev, struct device_attribute *attr,
