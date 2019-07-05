@@ -37,7 +37,7 @@ static void do_darknessv5_timer(struct work_struct *work);
 static int cpufreq_governor_darknessv5(struct cpufreq_policy *policy,
 				unsigned int event);
 
-#ifndef CONFIG_CPU_FREQ_DEFAULT_GOV_darknessv5
+#ifndef CONFIG_CPU_FREQ_DEFAULT_GOV_DARKNESSV5
 static
 #endif
 struct cpufreq_governor cpufreq_gov_darknessv5 = {
